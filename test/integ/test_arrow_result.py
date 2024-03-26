@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import json
+import os
 import random
 import re
 from datetime import date, datetime, time, timedelta, timezone
@@ -112,6 +113,8 @@ def serialize(value):
 @pytest.mark.parametrize("iceberg", [True, False])
 @pytest.mark.parametrize("datatype,examples", list(PRIMITIVE_DATATYPE_EXAMPLES.items()))
 def test_datatypes(iceberg, datatype, examples, conn_cnx):
+    if iceberg and os.getenv("cloud_provider", "dev") not in {"dev", "aws"}:
+        pytest.skip("Iceberg only configured in AWS")
     if iceberg and datatype in ICEBERG_UNSUPPORTED_TYPES:
         pytest.skip(f"{datatype} is incompatible with iceberg")
     table_name = f"arrow_datatype_test_table_{random_string(5)}"
@@ -169,7 +172,7 @@ def structured_type_verify(conn_cnx, query, data, schema, iceberg=False):
             conn.cursor().execute(f"drop table if exists {table_name}")
 
 
-@pytest.mark.internal
+# @pytest.mark.internal
 @pytest.mark.parametrize("iceberg", [True, False])
 @pytest.mark.parametrize("datatype,examples", list(PRIMITIVE_DATATYPE_EXAMPLES.items()))
 def test_array(iceberg, datatype, examples, conn_cnx):
@@ -183,7 +186,7 @@ def test_array(iceberg, datatype, examples, conn_cnx):
     )
 
 
-@pytest.mark.internal
+# @pytest.mark.internal
 @pytest.mark.parametrize("iceberg", [True, False])
 @pytest.mark.parametrize("key_type", ["varchar", "number"])
 @pytest.mark.parametrize("datatype,examples", list(PRIMITIVE_DATATYPE_EXAMPLES.items()))
@@ -199,7 +202,7 @@ def test_map(iceberg, key_type, datatype, examples, conn_cnx):
     )
 
 
-@pytest.mark.internal
+# @pytest.mark.internal
 @pytest.mark.parametrize("iceberg", [True, False])
 @pytest.mark.parametrize("datatype,examples", list(PRIMITIVE_DATATYPE_EXAMPLES.items()))
 def test_object(iceberg, datatype, examples, conn_cnx):
