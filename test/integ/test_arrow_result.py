@@ -172,7 +172,14 @@ def structured_type_verify(conn_cnx, query, data, schema, iceberg=False):
             conn.cursor().execute(f"drop table if exists {table_name}")
 
 
-# @pytest.mark.internal
+@pytest.mark.internal
+def test_do_internal_tests_really_get_run():
+    raise RuntimError(
+        "This test should fail if internal tests are actually getting run."
+    )
+
+
+@pytest.mark.internal
 @pytest.mark.parametrize("iceberg", [True, False])
 @pytest.mark.parametrize("datatype,examples", list(PRIMITIVE_DATATYPE_EXAMPLES.items()))
 def test_array(iceberg, datatype, examples, conn_cnx):
@@ -186,7 +193,7 @@ def test_array(iceberg, datatype, examples, conn_cnx):
     )
 
 
-# @pytest.mark.internal
+@pytest.mark.internal
 @pytest.mark.parametrize("iceberg", [True, False])
 @pytest.mark.parametrize("key_type", ["varchar", "number"])
 @pytest.mark.parametrize("datatype,examples", list(PRIMITIVE_DATATYPE_EXAMPLES.items()))
@@ -202,7 +209,7 @@ def test_map(iceberg, key_type, datatype, examples, conn_cnx):
     )
 
 
-# @pytest.mark.internal
+@pytest.mark.internal
 @pytest.mark.parametrize("iceberg", [True, False])
 @pytest.mark.parametrize("datatype,examples", list(PRIMITIVE_DATATYPE_EXAMPLES.items()))
 def test_object(iceberg, datatype, examples, conn_cnx):
